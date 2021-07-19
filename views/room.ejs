@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link type="image/png" href="https://p.kindpng.com/picc/s/75-757133_flat-video-icon-png-samsung-video-call-icon.png" rel="icon"> 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -29,6 +30,29 @@
       color: #ddd;
       font-family: 'Times New Roman', Times, serif;
     }
+    #bottom-nav{
+      position: fixed;
+      bottom: 0;
+      text-align: center;
+      margin: auto;
+      padding: 10px 10px;
+      left: 0;
+      display: inline-block;
+      background-color: aquamarine;
+      right: 0;
+      height: 100px;
+      width: 100%;
+    }
+    button{
+      border: none;
+      margin: auto;
+      align-items: center;
+      background-color: #fff;
+    }
+    img{
+      width: 60px;
+      height: 60px;
+    }
   </style>
   <script src="/socket.io/socket.io.js" ></script>
 </head>
@@ -38,6 +62,12 @@
       <label class="label" id="label"></label>
       <video id="localVideo" muted autoplay></video>
   
+  </div>
+  <div id="bottom-nav">
+    <button ><img src="micon" id="micon" onclick="toggleAudio()"></button>
+    <button id="micoff" style="display: none;" ><img src="micoff"></button>
+    <button  ><img src="videoon" id="videoon" onclick="toggleVideo()"></button>
+    <button id="videooff" style="display: none;"><img src="videooff"></button>
   </div>
   <script src="script.js"></script>
 </body>
