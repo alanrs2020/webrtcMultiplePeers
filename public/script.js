@@ -310,7 +310,7 @@ async function addRemoteTracks(stremTrack,item,peerId){
    
    label.className = "label";
    label.innerHTML = peerId;
-
+    video.setAttribute('autoplay',"")
    
      video.addEventListener('loadedmetadata', () => {
        video.play()
