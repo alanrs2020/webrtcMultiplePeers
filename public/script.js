@@ -294,20 +294,22 @@ async function addRemoteTracks(stremTrack,item,peerId){
   
    const videoGrid = document.getElementById('video-grid');
    var container = document.createElement("div");
+   const label = document.createElement("label");
+   const video = document.createElement('video');
    if(stremTrack.kind == "video"){
     container.id = peerId+"video";
+    video.srcObject = remoteTrack[peerId+"video"];
    }else{
      container.id = peerId+"audio";
      container.style.display = "none";
+     video.srcObject = remoteTrack[peerId+"audio"];
    }
 
-   const label = document.createElement("label");
-   const video = document.createElement('video');
+   
    label.className = "label";
-  
    label.innerHTML = peerId;
 
-     video.srcObject = remoteTrack[peerId];
+   
      video.addEventListener('loadedmetadata', () => {
        video.play()
      })
