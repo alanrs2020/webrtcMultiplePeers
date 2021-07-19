@@ -289,7 +289,7 @@ async function addRemoteTracks(stremTrack,item,peerId){
    addedTracksId.push(stremTrack.id);
     remoteStream = new MediaStream;
    remoteStream.addTrack(stremTrack);
-   remoteTrack[peerId] = remoteStream;
+   
    console.log("remoteStream tracks length",remoteTrack.length);
   
    const videoGrid = document.getElementById('video-grid');
@@ -297,9 +297,11 @@ async function addRemoteTracks(stremTrack,item,peerId){
    const label = document.createElement("label");
    const video = document.createElement('video');
    if(stremTrack.kind == "video"){
+    remoteTrack[peerId+"video"] = remoteStream;
     container.id = peerId+"video";
     video.srcObject = remoteTrack[peerId+"video"];
    }else{
+    remoteTrack[peerId+"audio"] = remoteStream;
      container.id = peerId+"audio";
      container.style.display = "none";
      video.srcObject = remoteTrack[peerId+"audio"];
