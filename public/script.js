@@ -20,7 +20,7 @@ const configuration = {
 let peerConnection = null;
 let localStream = null;
 let audio = true;
-let video = false;
+let video = true;
 let remoteTrack = {}
 let addedTracksId = ["3454356"];
 let remoteStream = null;
@@ -62,7 +62,7 @@ function toggleAudio() {
     document.getElementById("micon").src = "micoff";
       localStream.getAudioTracks()[0].enabled = false
   } else {
-    video = true
+    audio = true
     document.getElementById("micon").src = "micon";
       localStream.getAudioTracks()[0].enabled = true
   }
