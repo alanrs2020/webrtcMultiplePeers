@@ -304,7 +304,7 @@ async function addRemoteTracks(stremTrack,item,peerId){
    const label = document.createElement("label");
    const video = document.createElement('video');
    label.className = "label";
-   label.id = "label"+peerId;
+  
    label.innerHTML = peerId;
 
      video.srcObject = remoteTrack[peerId];
