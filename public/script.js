@@ -37,8 +37,8 @@ async function getUserMedia(){
           addlocalVideoStream(stream);
           localStream = stream;
     // await createRoom();
-    socket.emit("user-connected",userId,ROOM_ID);
-    console.log("SOCKET ID"+socket.id);
+    socket.emit("user-connected",userId,ROOM_ID,socket.id);
+   // console.log("SOCKET ID"+socket.id);
 
     audioButton.addEventListener('click', toggleAudio);
     videoButton.addEventListener('click', toggleVideo);
@@ -67,18 +67,20 @@ function toggleAudio() {
       localStream.getAudioTracks()[0].enabled = true
   }
 }
-socket.on("user-connected",async function(peerId,roomId){
+socket.on("user-connected",async function(peerId,roomId,socketId){
 
+  console.log("Already offered");
    if(ROOM_ID == roomId && peerId != userId){
     if(peerConnections[peerId] == null){
-      await createOffer(peerId);
+      await createOffer(peerId,socketId);
+      peers[socketId] = peerId;
     }else{
       console.log("Already offered");
     }
    }
 });
 
-async function createOffer(id){
+async function createOffer(id,socketId){
   peerConnection = new RTCPeerConnection(configuration);
   peerConnections[id] = peerConnection;
 
@@ -217,24 +219,24 @@ async function AddIceCandidate(candidate,peerId){
   await peerConnections[peerId].addIceCandidate(new RTCIceCandidate(JSON.parse(candidate)));
   
 }
-socket.on("user-disconnected",function(peerId,roomId){
-  const parents = videoGrid.children;
-  if(ROOM_ID == roomId){
-    for(i = 0;i<parents.length;i++){
-      console.log(parents[i].getAttribute('id'),peerId+"video")
-      if(parents[i].getAttribute('id') == peerId+"video"){
-        parents[i].style.display = "none";
-      }
-      if(parents[i].getAttribute('id') == peerId+"audio"){
-        parents[i].style.display = "none";
-      }
-    }
+socket.on("user-disconnected",function(socketId){
+  const parents = document.getElementsByTagName('div')
+
+
+  if(peers[socketId] != null){
+    const peerId = peers[socketId];
+    const x = document.getElementById(peerId+"video");
+    console.log(x);
+    const y = document.getElementById(peerId+"audio");
+    console.log(y)
+    x.remove();
+    y.remove();
   }
 })
 async function AddAnswerSdp(answerSdp,peerId){
 
   
-      console.log('Got remote description: ', answerSdp);
+    //  console.log('Got remote description: ', answerSdp);
       const rtcSessionDescription = new RTCSessionDescription(answerSdp);
       await peerConnections[peerId].setRemoteDescription(rtcSessionDescription);
 
@@ -248,11 +250,7 @@ function registerPeerConnectionListeners(peerId) {
 
   peerConnections[peerId].addEventListener('connectionstatechange', () => {
     console.log(`Connection state change: ${peerConnections[peerId].connectionState}`);
-    if(peerConnections[peerId].connectionState == "disconnected"){
 
-      socket.emit("user-disconnected",peerId,ROOM_ID)
-      
-    }
   });
 
   peerConnections[peerId].addEventListener('signalingstatechange', () => {
@@ -298,7 +296,7 @@ async function addRemoteTracks(stremTrack,item,peerId){
    const video = document.createElement('video');
    if(stremTrack.kind == "video" && remoteTrack[peerId+"video"] == null){
     remoteTrack[peerId+"video"] = remoteStream;
-    container.id = peerId+"video";
+    container.setAttribute("id",peerId+"video");
     container.className = "column";
     video.srcObject = remoteTrack[peerId+"video"];
     label.className = "label";
@@ -327,6 +325,8 @@ async function addRemoteTracks(stremTrack,item,peerId){
      container.append(video)
      videoGrid.append(container)
 
+   }else{
+     
    }
 
    

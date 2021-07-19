@@ -33,28 +33,26 @@ io.on('connection', (socket) => {
  
   socket.on("callerCandidates",(iceCandidates,userId,roomId,to)=>{
    // console.log("callerCandidates"+iceCandidates+"userId: "+userId);
-    io.emit('callerCandidates', iceCandidates,userId,roomId,to);
+    socket.broadcast.emit('callerCandidates', iceCandidates,userId,roomId,to);
   });
-  socket.on("OfferSdp",(sdp,userId,roomId)=>{
+  socket.on("OfferSdp",(sdp,userId,roomId,socketId)=>{
    // console.log("OfferSdp"+sdp+"userId: "+userId,roomId);
-    io.emit("OfferSdp", sdp,userId,roomId);
+    socket.broadcast.emit("OfferSdp", sdp,userId,roomId);
   });
   socket.on("answerSdp",(sdp,userId,roomId,touser)=>{
    // console.log("answerSdp"+sdp+"userId: "+userId,roomId,touser);
-    io.emit("answerSdp",sdp,userId,roomId,touser);
+    socket.broadcast.emit("answerSdp",sdp,userId,roomId,touser);
   });
   socket.on("calleeCandidates",(iceCandidates,userId,roomId,touser)=>{
-    console.log("calleeCandidates"+iceCandidates+"userId: "+userId+roomId+touser);
-    io.emit('calleeCandidates', iceCandidates,userId,roomId,touser);
+    //console.log("calleeCandidates"+iceCandidates+"userId: "+userId+roomId+touser);
+    socket.broadcast.emit('calleeCandidates', iceCandidates,userId,roomId,touser);
   });
-  socket.on("user-connected",(userId,roomId)=>{
-    console.log("user-conneted"+userId);
-    io.emit("user-connected",userId,roomId);
+  socket.on("user-connected",(userId,roomId,socketId)=>{
+    console.log("user-conneted"+userId+socketId);
+    socket.broadcast.emit("user-connected",userId,roomId,socketId);
   });
-
-  socket.on("user-disconnected",(userId,roomId)=>{
-    console.log("user-disconneted"+userId);
-    io.emit("user-disconnected",userId,roomId)
+  socket.on("disconnect", ()=>{
+    socket.broadcast.emit("user-disconnected",socket.id)
   })
 });
 server.listen(process.env.PORT || 3000)
