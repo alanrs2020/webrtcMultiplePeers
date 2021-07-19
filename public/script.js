@@ -1,4 +1,6 @@
 const socket = io("/")
+const audioButton = document.getElementById("micon");
+const videoButton = document.getElementById("videoon");
 const videoGrid = document.getElementById('video-grid');
 const userId = getUniqueId();
 const myVideo = document.createElement('video')
@@ -17,6 +19,8 @@ const configuration = {
 };
 let peerConnection = null;
 let localStream = null;
+let audio = true;
+let video = false;
 let remoteTrack = {}
 let addedTracksId = ["3454356"];
 let remoteStream = null;
@@ -35,8 +39,34 @@ async function getUserMedia(){
     // await createRoom();
     socket.emit("user-connected",userId,ROOM_ID);
     console.log("SOCKET ID"+socket.id);
+
+    audioButton.addEventListener('click', toggleAudio);
+    videoButton.addEventListener('click', toggleVideo);
+
+}
+function toggleVideo() {
+  if (video == true) {
+    document.getElementById("videoon").src = "videooff";
+    localStream.getVideoTracks()[0].enabled = false
+     video = false;
+  } else {
+    document.getElementById("videoon").src = "videoon";
+    localStream.getVideoTracks()[0].enabled = true
+    video = true;
+  }
 }
 
+function toggleAudio() {
+  if (audio == true) {
+    audio = false
+    document.getElementById("micon").src = "micoff";
+      localStream.getAudioTracks()[0].enabled = false
+  } else {
+    video = true
+    document.getElementById("micon").src = "micon";
+      localStream.getAudioTracks()[0].enabled = true
+  }
+}
 socket.on("user-connected",async function(peerId,roomId){
 
    if(ROOM_ID == roomId && peerId != userId){
