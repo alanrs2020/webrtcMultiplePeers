@@ -10,7 +10,21 @@ app.use(express.static('public'))
 app.get('/', (req, res) => {
   res.redirect(`/${getUniqueId()}`)
 })
-
+app.get('/views/icon.png', (req, res) => {
+  res.sendFile(__dirname+"/views/icon.png")
+})
+app.get('/micon', (req, res) => {
+  res.sendFile(__dirname+"/views/miconn.png")
+})
+app.get('/micoff', (req, res) => {
+  res.sendFile(__dirname+"/views/micoff.png")
+})
+app.get('/videoon', (req, res) => {
+  res.sendFile(__dirname+"/views/videoon.png")
+})
+app.get('/videooff', (req, res) => {
+  res.sendFile(__dirname+"/views/videooff.png")
+})
 app.get('/:room', (req, res) => {
   res.render('room', { roomId: req.params.room })
 })
