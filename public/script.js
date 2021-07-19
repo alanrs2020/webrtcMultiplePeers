@@ -296,28 +296,41 @@ async function addRemoteTracks(stremTrack,item,peerId){
    var container = document.createElement("div");
    const label = document.createElement("label");
    const video = document.createElement('video');
-   if(stremTrack.kind == "video"){
+   if(stremTrack.kind == "video" && remoteTrack[peerId+"video"] == null){
     remoteTrack[peerId+"video"] = remoteStream;
     container.id = peerId+"video";
+    container.className = "column";
     video.srcObject = remoteTrack[peerId+"video"];
-   }else{
-    remoteTrack[peerId+"audio"] = remoteStream;
-     container.id = peerId+"audio";
-     container.style.display = "none";
-     video.srcObject = remoteTrack[peerId+"audio"];
-   }
-
-   
-   label.className = "label";
+    label.className = "label";
    label.innerHTML = peerId;
+
     video.setAttribute('autoplay',"")
-   
      video.addEventListener('loadedmetadata', () => {
        video.play()
      })
      container.append(label)
      container.append(video)
      videoGrid.append(container)
+   }else if(stremTrack.kind == "audio" && remoteTrack[peerId+"audio"] == null){
+    remoteTrack[peerId+"audio"] = remoteStream;
+     container.id = peerId+"audio";
+     container.style.display = "none";
+     video.srcObject = remoteTrack[peerId+"audio"];
+     label.className = "label";
+   label.innerHTML = peerId;
+
+    video.setAttribute('autoplay',"")
+     video.addEventListener('loadedmetadata', () => {
+       video.play()
+     })
+     container.append(label)
+     container.append(video)
+     videoGrid.append(container)
+
+   }
+
+   
+   
   }
  
  }
