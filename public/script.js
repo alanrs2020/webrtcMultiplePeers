@@ -1,8 +1,10 @@
 const socket = io("/")
 const audioButton = document.getElementById("micon");
 const videoButton = document.getElementById("videoon");
+const endButton = document.getElementById('end');
 const videoGrid = document.getElementById('video-grid');
 const userId = getUniqueId();
+const shareScreenButton = document.getElementById("shareScreen");
 const myVideo = document.createElement('video')
 myVideo.muted = true
 const peers = {}
@@ -31,9 +33,17 @@ getUserMedia();
 async function getUserMedia(){
   //alert(`Room-Id: ${ROOM_ID}`,)
    const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true
-      });
+     video:{
+    width: { min: 200, ideal: 1280, max: 1920 },
+    height: { min: 300, ideal: 720, max: 1080 },
+    frameRate: { ideal: 15, max: 30 }
+  },
+audio: {
+echoCancellation: false,
+autoGainControl: false,
+noiseSuppression: false
+}
+});
           addlocalVideoStream(stream);
           localStream = stream;
     // await createRoom();
@@ -42,7 +52,31 @@ async function getUserMedia(){
 
     audioButton.addEventListener('click', toggleAudio);
     videoButton.addEventListener('click', toggleVideo);
+    shareScreenButton.addEventListener('click',toggleShareScreen);
+    endButton.addEventListener('click',toggleVideoCallEnd);
 
+}
+async function toggleVideoCallEnd(){
+ // window.location.href = "http://localhost:3000/home";
+ window.location.href = "https://videocallappwebrtc.herokuapp.com/home";
+}
+async function toggleShareScreen(){
+  const stream = await navigator.mediaDevices.getDisplayMedia({
+    video:{
+    frameRate: { ideal: 15, max: 30 }
+  },
+  audio: {
+   echoCancellation: false,
+   autoGainControl: false,
+   noiseSuppression: false 
+    }
+      });
+      addShareScreen(stream);
+          localStream = stream;
+}
+function addShareScreen(stream){
+  var x = document.createElement("video")
+  var y = document.createElement
 }
 function toggleVideo() {
   if (video == true) {
@@ -285,44 +319,52 @@ async function addRemoteTracks(stremTrack,item,peerId){
  
   if (!addedTracksId.includes(stremTrack.id)) {
    addedTracksId.push(stremTrack.id);
-    remoteStream = new MediaStream;
+    remoteStream = new MediaStream();
    remoteStream.addTrack(stremTrack);
    
    console.log("remoteStream tracks length",remoteTrack.length);
   
    const videoGrid = document.getElementById('video-grid');
    var container = document.createElement("div");
+   var labelcont = document.createElement('div');
+   labelcont.className = 'label';
    const label = document.createElement("label");
+   const dp = document.createElement('img');
+   dp.setAttribute('id',"dpimg")
+   dp.src = "person";
+   labelcont.append(dp);
+   labelcont.append(label)
+   
    const video = document.createElement('video');
    if(stremTrack.kind == "video" && remoteTrack[peerId+"video"] == null){
     remoteTrack[peerId+"video"] = remoteStream;
     container.setAttribute("id",peerId+"video");
     container.className = "column";
     video.srcObject = remoteTrack[peerId+"video"];
-    label.className = "label";
    label.innerHTML = peerId;
 
     video.setAttribute('autoplay',"")
      video.addEventListener('loadedmetadata', () => {
        video.play()
      })
-     container.append(label)
+    
      container.append(video)
+     container.append(labelcont)
      videoGrid.append(container)
    }else if(stremTrack.kind == "audio" && remoteTrack[peerId+"audio"] == null){
     remoteTrack[peerId+"audio"] = remoteStream;
      container.id = peerId+"audio";
      container.style.display = "none";
      video.srcObject = remoteTrack[peerId+"audio"];
-     label.className = "label";
    label.innerHTML = peerId;
 
     video.setAttribute('autoplay',"")
      video.addEventListener('loadedmetadata', () => {
        video.play()
      })
-     container.append(label)
+     
      container.append(video)
+     container.append(labelcont)
      videoGrid.append(container)
 
    }else{

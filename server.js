@@ -5,12 +5,17 @@ const io = require('socket.io')(server)
 
 
 app.set('view engine', 'ejs')
+
 app.use(express.static('public'))
 
+
+app.get('/home', (req, res) => {
+  res.sendFile(__dirname+"/views/index.html")
+})
 app.get('/', (req, res) => {
   res.redirect(`/${getUniqueId()}`)
 })
-app.get('/views/icon.png', (req, res) => {
+app.get('/icon', (req, res) => {
   res.sendFile(__dirname+"/views/icon.png")
 })
 app.get('/micon', (req, res) => {
@@ -25,9 +30,19 @@ app.get('/videoon', (req, res) => {
 app.get('/videooff', (req, res) => {
   res.sendFile(__dirname+"/views/videooff.png")
 })
+app.get('/shareoff', (req, res) => {
+  res.sendFile(__dirname+"/views/sharescreenoff.png")
+})
+app.get('/share', (req, res) => {
+  res.sendFile(__dirname+"/views/sharescreen.png")
+})
+app.get('/person', (req, res) => {
+  res.sendFile(__dirname+"/views/person.jpg")
+})
 app.get('/:room', (req, res) => {
   res.render('room', { roomId: req.params.room })
 })
+
 
 io.on('connection', (socket) => {
  
