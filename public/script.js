@@ -3,6 +3,7 @@ const audioButton = document.getElementById("micon");
 const videoButton = document.getElementById("videoon");
 const endButton = document.getElementById('end');
 const videoGrid = document.getElementById('video-grid');
+const copyId = document.getElementById('copy');
 const userId = getUniqueId();
 const shareScreenButton = document.getElementById("shareScreen");
 const myVideo = document.createElement('video')
@@ -54,7 +55,17 @@ noiseSuppression: false
     videoButton.addEventListener('click', toggleVideo);
     shareScreenButton.addEventListener('click',toggleShareScreen);
     endButton.addEventListener('click',toggleVideoCallEnd);
+    copyId.addEventListener('click',toggleCopyId);
 
+}
+async function toggleCopyId(){
+  var x = document.getElementById('roomId')
+  x.select();
+  x.setSelectionRange(0, 99999); /* For mobile devices */
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+  //swal("Room-Id Copied !!","Room id: "+x.nodeValue)
 }
 async function toggleVideoCallEnd(){
  // window.location.href = "http://localhost:3000/home";
@@ -113,7 +124,20 @@ socket.on("user-connected",async function(peerId,roomId,socketId){
     }
    }
 });
+socket.on("user-disconnected",function(socketId){
 
+
+
+  if(peers[socketId] != null){
+    const peerId = peers[socketId];
+    const x = document.getElementById(peerId+"video");
+    console.log(x);
+    const y = document.getElementById(peerId+"audio");
+    console.log(y)
+    x.remove();
+    y.remove();
+  }
+})
 async function createOffer(id,socketId){
   peerConnection = new RTCPeerConnection(configuration);
   peerConnections[id] = peerConnection;
@@ -165,7 +189,7 @@ async function createOffer(id,socketId){
         });
     });
         
-        socket.emit("OfferSdp",JSON.stringify(roomWithOffer),userId,ROOM_ID);
+        socket.emit("OfferSdp",JSON.stringify(roomWithOffer),userId,ROOM_ID,socket.id);
   
         peerConnections[id].onremovestream = function(event){
   
@@ -173,8 +197,9 @@ async function createOffer(id,socketId){
                peerConnections[id].remoteStream(event.streams[0]);
         };
 }
-  socket.on("OfferSdp",async function(sdp,peerId,roomId){
-    await setRemoteOffer(sdp,peerId,roomId);    
+  socket.on("OfferSdp",async function(sdp,peerId,roomId,socketId){
+    await setRemoteOffer(sdp,peerId,roomId);
+    peers[socketId] = peerId;    
   });
 
 async function setRemoteOffer(sdp,peerId,roomId){
@@ -253,20 +278,7 @@ async function AddIceCandidate(candidate,peerId){
   await peerConnections[peerId].addIceCandidate(new RTCIceCandidate(JSON.parse(candidate)));
   
 }
-socket.on("user-disconnected",function(socketId){
-  const parents = document.getElementsByTagName('div')
 
-
-  if(peers[socketId] != null){
-    const peerId = peers[socketId];
-    const x = document.getElementById(peerId+"video");
-    console.log(x);
-    const y = document.getElementById(peerId+"audio");
-    console.log(y)
-    x.remove();
-    y.remove();
-  }
-})
 async function AddAnswerSdp(answerSdp,peerId){
 
   
@@ -284,6 +296,9 @@ function registerPeerConnectionListeners(peerId) {
 
   peerConnections[peerId].addEventListener('connectionstatechange', () => {
     console.log(`Connection state change: ${peerConnections[peerId].connectionState}`);
+    if(peerConnections[peerId].connectionState == "disconnected"){
+
+    }
 
   });
 
@@ -344,6 +359,7 @@ async function addRemoteTracks(stremTrack,item,peerId){
    label.innerHTML = peerId;
 
     video.setAttribute('autoplay',"")
+    video.setAttribute('playsinline',"")
      video.addEventListener('loadedmetadata', () => {
        video.play()
      })
@@ -359,6 +375,7 @@ async function addRemoteTracks(stremTrack,item,peerId){
    label.innerHTML = peerId;
 
     video.setAttribute('autoplay',"")
+    video.setAttribute('playsinline',"")
      video.addEventListener('loadedmetadata', () => {
        video.play()
      })

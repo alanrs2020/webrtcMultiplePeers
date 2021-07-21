@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="image/png" href="https://i.pinimg.com/originals/22/e4/e0/22e4e079c332b3f3589f4a8b73545076.png" rel="icon" style="color: tomato;"> 
 <title>Video Call App</title>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -19,6 +20,18 @@
     color:tomato;
     
 }
+@media screen and (max-width: 900px) {
+    #form{
+        width: 100%;
+    }
+  }
+  
+  /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 600px) {
+    #form{
+        width: 100%;
+    }
+  }
 #form{
     background-color: #333;
     color: yellow;
@@ -46,6 +59,7 @@ input:nth-child(even){
 input{
     position: relative;
     width: 100%;
+    outline: none;
     margin-top: 10px;
     left: 0;
     right: 0;

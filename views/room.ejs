@@ -33,10 +33,12 @@
     /* Create four equal columns that floats next to each other */
     .column {
       float: left;
-      border-radius: 5em;
+      border-radius: 3em;
+      padding: 10px 5px;
+      margin: 5px;
+      box-shadow: 2px 2px 2px 3px antiquewhite;
       overflow: hidden;
       width: 25%;
-      padding: 10px;
     }
     
     /* Clear floats after the columns */
@@ -69,6 +71,7 @@
     }
     video {
       width: 100%;
+      border-radius: 2em;
       height: 300px;
       transform: rotateY(180deg);
       object-fit: cover;
@@ -81,6 +84,7 @@
     }
     .label label,img{
       flex: 1;
+      color: antiquewhite;
       padding: 5px 5px;
     }
     #bottom-nav{
@@ -113,13 +117,15 @@
       color: #fff;
       border: #fff;
     }
+    
     input{
-      width: 70px;
+      width: 60px;
       border-radius: 10em;
       height: 60px;
     }
     #main {
-      width: 250px;
+      width: fit-content;
+      height: fit-content;
       margin: auto;
       padding: 10px 10px;
       display: flex;
@@ -130,10 +136,43 @@
       padding: 5px 5px;
        flex: 1;
     }
+    #header{
+     
+      background-color:antiquewhite;
+      color: #333;
+      width: 200px;
+      display: flex;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+    }
+    #roomId{
+      width: fit-content;
+      height: 30px;
+      border: none;
+      display: none;
+      background-color: antiquewhite;
+      outline: none;
+      border-radius: 1em;
+    }
+    #copy{
+      width: 30px;
+      height: 30px;
+      border: none;
+      background-color: antiquewhite;
+      right: 0;
+      z-index: 3;
+      position: absolute;
+      float: right;
+      border-radius: 2px;
+    }
   </style>
   <script src="/socket.io/socket.io.js" ></script>
 </head>
 <body>
+  <div id="header">
+   
+    <input type="text" value="<%= roomId %>" id="roomId" >
+    
+  </div>
   <div id="video-grid" class="row">
     
       <div class="column">
@@ -150,8 +189,10 @@
     <div id="main">
       <input type="image" src="micon" id="micon">
       <input type="image" src="videoon" id="videoon" >
-      <input type="image" src="share" id="shareScreen"><br>
+      <input type="image" src="share" id="shareScreen">
       <input type="button" id="end" value="End" >
+      <input type="image" value="<%= roomId %>" id="copy" src="copy">
+     <!-- <input type="button" id="roomId" value="Room Id">-->
     </div>
   </div>
   <script src="script.js"></script>

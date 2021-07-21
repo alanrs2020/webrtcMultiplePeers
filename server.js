@@ -39,6 +39,9 @@ app.get('/share', (req, res) => {
 app.get('/person', (req, res) => {
   res.sendFile(__dirname+"/views/person.jpg")
 })
+app.get('/copy', (req, res) => {
+  res.sendFile(__dirname+"/views/copy.png")
+})
 app.get('/:room', (req, res) => {
   res.render('room', { roomId: req.params.room })
 })
@@ -52,7 +55,7 @@ io.on('connection', (socket) => {
   });
   socket.on("OfferSdp",(sdp,userId,roomId,socketId)=>{
    // console.log("OfferSdp"+sdp+"userId: "+userId,roomId);
-    socket.broadcast.emit("OfferSdp", sdp,userId,roomId);
+    socket.broadcast.emit("OfferSdp", sdp,userId,roomId,socketId);
   });
   socket.on("answerSdp",(sdp,userId,roomId,touser)=>{
    // console.log("answerSdp"+sdp+"userId: "+userId,roomId,touser);
@@ -63,10 +66,12 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('calleeCandidates', iceCandidates,userId,roomId,touser);
   });
   socket.on("user-connected",(userId,roomId,socketId)=>{
-    console.log("user-conneted"+userId+socketId);
+    console.log("user-conneted "+userId +socketId);
     socket.broadcast.emit("user-connected",userId,roomId,socketId);
   });
+  
   socket.on("disconnect", ()=>{
+    console.log("user-disconneted "+socket.id)
     socket.broadcast.emit("user-disconnected",socket.id)
   })
 });
